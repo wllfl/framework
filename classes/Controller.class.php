@@ -181,4 +181,22 @@ class Controller{
 	    	return Helper::printMsgErro('Erro: ' . $e->getMessage());
 	    }
     }
+
+   /*  
+   * Método público para executar instruções de consulta independente do nome da tabela passada no _construct  
+   * @param $sql = Instrução SQL inteira contendo, nome das tabelas envolvidas, JOINS, WHERE, ORDER BY, GROUP BY e LIMIT  
+   * @param $arrayParam = Array contendo somente os parâmetros necessários para clásusla WHERE  
+   * @param $fetchAll  = Valor booleano com valor default TRUE indicando que serão retornadas várias linhas, FALSE retorna apenas a primeira linha  
+   * @return Retorna array de dados da consulta em forma de objetos  
+   */ 
+   public function getDados($sql, $arrayParams=null, $fetchAll=TRUE){
+   		try{
+   			if(!empty($sql)):
+   				$retorno = $this->crud->getSQLGeneric($sql, $arrayParams, $fetchAll);
+   				return $retorno;
+   			endif;
+   		}catch(Exception $e){
+	    	return Helper::printMsgErro('Erro: ' . $e->getMessage());
+	    }
+   } 
 }
