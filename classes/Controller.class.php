@@ -113,7 +113,7 @@ class Controller{
     */
     public function insert($arrayDados, $duplicidade=TRUE){
     	try{
-	    	if($duplicidade == TRUE):
+	    	if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
 	    	    if($this->verificaDuplicidade()):
 	    		   return Helper::printMsgErro('Existem valores duplicados!');
 	    		   exit();
