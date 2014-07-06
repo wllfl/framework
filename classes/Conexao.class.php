@@ -1,4 +1,12 @@
 <?php
+ /*************************************************************************************************************  
+ * @author William F. Leite                                                                                   *  
+ * Data: 20/06/2014                                                                                           *  
+ * Descrição: Classe elaborada com o objetivo de auxlilar nas operações CRUDs em diversos SGBDS, possui       *  
+ * funcionalidades para construir instruções de INSERT, UPDATE E DELETE onde as mesmas podem ser executadas   *  
+ * nos principais SGBDs, exemplo SQL Server, MySQL e Firebird. Instruções SELECT são recebidas integralmente  *  
+ * via parâmetro.                                                                                             *  
+ *************************************************************************************************************/  
 
 /*
  * Constantes de parâmetros para configuração da conexão
