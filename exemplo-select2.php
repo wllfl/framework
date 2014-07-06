@@ -11,5 +11,5 @@ $controller = new Controller('tab_usuario');
 // Variável contendo instrução SQL
 $sql = "SELECT * FROM tab_usuario";
 
-// Chama o método necessário consulta simples com vários registros de retorno
-echo json_encode($controller->getDados($sql));
+// Chama o método consulta contendo apenas 1 registros de retorno
+echo json_encode($controller->getDados($sql, null, false));

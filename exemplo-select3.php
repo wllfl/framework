@@ -9,7 +9,10 @@ require_once "classes/Controller.class.php";
 $controller = new Controller('tab_usuario');
 
 // Variável contendo instrução SQL
-$sql = "SELECT * FROM tab_usuario";
+$sql = "SELECT * FROM tab_usuario WHERE id > ?";
 
-// Chama o método necessário consulta simples com vários registros de retorno
-echo json_encode($controller->getDados($sql));
+// Array com valores para cláusula WHERE
+$arrayCondicao = array(10);
+
+// Chama o método consulta contendo cláusula WHERE com vários registro de retorno
+echo json_encode($controller->getDados($sql, $arrayCondicao, TRUE));
