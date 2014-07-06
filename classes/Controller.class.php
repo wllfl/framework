@@ -84,7 +84,7 @@ class Controller{
 	* @param $arrayCondicao = Array de dados contendo colunas e valores para condição WHERE - Exemplo array('$id='=>1)   
 	* retorna a quantidade de registros encontrados
 	*/
-	function verificaDuplicidade(){
+	private function verificaDuplicidade(){
 		$valCondicao = "";
 
 	   // Loop para montar a condição WHERE   
