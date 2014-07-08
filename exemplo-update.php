@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 // Require nos scripts necessários
-require_once "classes/Controller.class.php";
+require_once "classes/cgitontroller.class.php";
 
 // Array com dados para inserção, edição ou exclusão
 $arrayDados = array('nome' => 'User PostgreSQL Editado', 'email' => 'postgresql@ig.com.br');
