@@ -1,0 +1,29 @@
+.msg{
+        min-width: 100px;
+        padding: 7px;
+        text-align: center;
+        font-weight: bold;
+        border-radius: 7px;
+        font-size: 13px;
+        font-variant:small-caps;
+        font-family: "Trebuchet MS", Arial, Helvetica;
+        box-shadow: 1px 1px 5px #000;
+}
+
+.msg-conf{	
+	background-color: #B9ECBC;
+	color: #158317;
+	border: 1px solid #158317;    	
+}
+
+.msg-erro{
+	background-color: #EAC1C1;
+	color: #9F1919;
+	border: 1px solid #9F1919;  
+}
+
+.msg-aviso{
+	background-color: #EBECB3;
+	color: #7D7211;
+	border: 1px solid #7D7211;  
+}
