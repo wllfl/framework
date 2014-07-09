@@ -15,4 +15,4 @@ $sql = "SELECT * FROM tab_usuario WHERE id > ?";
 $arrayCondicao = array(10);
 
 // Chama o método consulta contendo cláusula WHERE com vários registro de retorno
-echo json_encode($controller->getDados($sql, $arrayCondicao, TRUE)); 
+echo json_encode($controller->getDados($sql, $arrayCondicao, TRUE));   
