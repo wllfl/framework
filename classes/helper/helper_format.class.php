@@ -105,12 +105,12 @@ class helper_format{
 	}
 
 	/*
-	*  Método estático para setar o arquivo CSS para estilizar as mensagens
+	* Método estático para setar o arquivo CSS para estilizar as mensagens
 	* @return String - String contendo o código CSS
 	*/
 	private static function loadCSS(){
 		$retorno = "<style type='text/css'>";
-		$retorno .= file_get_contents(realpath('classes/estilo-controller.css'));
+		$retorno .= file_get_contents(realpath("classes/helper/estilo-controller.css"));
 		$retorno .= "</style>";
 
 		return $retorno;

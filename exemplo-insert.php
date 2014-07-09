@@ -12,7 +12,7 @@ require_once "classes/helper/helper_format.class.php";
 $controller = new controller('tab_usuario');
 
 // Array com dados para inserção no banco de dados
-$arrayDados = array('nome' => 'User PostgreSQL', 'email' => 'postgresql@ig.com', 'senha' => '23233', 'privilegio' => '', 'data' => Helper::dataBrToEng('06/07/2014'));
+$arrayDados = array('nome' => 'User PostgreSQL', 'email' => 'postgresql@ig.com', 'senha' => '23233', 'privilegio' => '', 'data' => helper_format::dataBrToEng('06/07/2014'));
 
 // Array com nome dos campos que serão aceitos com valor null 
 $arrayNullAceito = array('privilegio');

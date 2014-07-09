@@ -1,0 +1,44 @@
+body{
+	margin: 0;
+	padding: 0;
+	background-color: #EBE5E5;
+	font-family: Verdana;
+}
+
+#corpo{
+	width: 800px;
+	height: 600px;
+	margin: 50px auto;
+}
+
+fieldset{
+	width: 700px;
+	border: 20px solid #93929E;
+	background-color: #ABDB87;
+	padding: 20px;
+	border-radius: 15px;
+}
+
+label{
+	display: inline-block;
+	width: 110px;
+	margin: 10px;
+}
+
+legend{
+	padding: 15px;
+	border-radius: 15px;	
+}
+
+.msg-validacao{
+	color: red;
+	font-size: 10px;
+	font-weight: bold;
+	margin-left: 10px;
+}
+
+.msg-servidor{
+	text-align: center;
+	margin: 15px auto;
+	display: block;
+}

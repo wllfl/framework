@@ -113,14 +113,14 @@ class controller{
     */
     public function insert($arrayDados, $duplicidade=TRUE){
     	try{
-	    	if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
-	    	    if($this->verificaDuplicidade()):
-	    		   return helper_format::printMsgErro('Existem valores duplicados!');
-	    		   exit();
-	    	    endif;
-	    	endif;
-	    	
 	    	if ($this->validaArray($arrayDados)):
+	    		if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
+		    	    if($this->verificaDuplicidade()):
+		    		   return helper_format::printMsgErro('Está operação está duplicando registros!');
+		    		   exit();
+		    	    endif;
+		    	endif;
+
 	    		$retorno = $this->crud->insert($arrayDados);
 	    		if($retorno == 1):
 	    			return helper_format::printMsgConfim('Registro incluído com sucesso!');
