@@ -12,7 +12,7 @@ $arrayDados = array('nome' => 'User PostgreSQL Editado', 'email' => 'postgresql@
 $arrayCondicao = array('id=' => 15);
 
 // Instância um objeto Controller passando como parâmetro o nome da tabela que será manipulada
-$controller = new Controller('tab_usuario');
+$controller = new controller('tab_usuario');
 
 // Chama o método necessário INSERT, UPDATE ou DELETE
 echo $controller->update($arrayDados, $arrayCondicao);

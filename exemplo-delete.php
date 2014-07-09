@@ -6,7 +6,7 @@ ini_set("display_errors", 1);
 require_once "classes/controller.class.php";
 
 // Instância um objeto Controller passando como parâmetro o nome da tabela que será manipulada
-$controller = new Controller('tab_usuario');
+$controller = new controller('tab_usuario');
 
 // Array contendo condições para o delete
 $arrayCondicao = array('id=' => 8);

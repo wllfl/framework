@@ -9,7 +9,7 @@ require_once "classes/controller.class.php";
 require_once "classes/helper/helper_format.class.php";
 
 // Instância um objeto Controller passando como parâmetro o nome da tabela que será manipulada
-$controller = new Controller('tab_usuario');
+$controller = new controller('tab_usuario');
 
 // Array com dados para inserção no banco de dados
 $arrayDados = array('nome' => 'User PostgreSQL', 'email' => 'postgresql@ig.com', 'senha' => '23233', 'privilegio' => '', 'data' => Helper::dataBrToEng('06/07/2014'));
