@@ -14,7 +14,6 @@ body{
 fieldset{
 	width: 700px;
 	border: 20px solid #93929E;
-	background-color: #ABDB87;
 	padding: 20px;
 	border-radius: 15px;
 }
@@ -28,6 +27,14 @@ label{
 legend{
 	padding: 15px;
 	border-radius: 15px;	
+}
+
+.box-cadastro{
+	background-color: #ABDB87;
+}
+
+.box-consulta{
+	
 }
 
 .msg-validacao{

@@ -30,9 +30,19 @@ class controller{
 	* Método construtor da classe
 	* @param $tabela - Contém o nome da tabela onde serão manipulados os dados
 	*/
-	public function __construct($tabela){
-		$this->tabela = $tabela;
+	public function __construct($tabela=null){
+		if(!empty($tableName)) $this->tabela = $tabela;
 		$this->crud = new Crud($tabela);
+	}
+
+	/*
+	* Método público para setar o nome da tabela que será utizada
+	* @param $tableName - String contendo o nome da tabela
+	*/
+	public function setTableName($tableName){
+		if(!empty($tableName)):
+			$this->$tabela = $tableName;
+		endif;
 	}
 
 	/*

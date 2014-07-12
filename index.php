@@ -12,7 +12,7 @@
     </head>
     <body>
     	<div id="corpo">
-    		<fieldset>
+    		<fieldset class='box-cadastro'>
     			<legend align="center">Informações do Usuário</legend>
     			<form action="script-client.php" method="post">
     				<span class='msg-servidor'><?php echo (isset($_SESSION['MENSAGEM'])) ? $_SESSION['MENSAGEM'] : ''; ?></span>
@@ -36,7 +36,7 @@
     				<input type='hidden' name='id' id='id'/>
     				<input type='submit' name='submit' id='submit' value='Gravar' />
     				<input type='reset' name='limpar' id='limpar' value='Limpar' />
-    				<input type='button' name='consultar' id='consultar' value='Consultar' />
+    				<input type='button' name='consultar' id='consultar' value='Consultar' onclick="window.location='consulta.php'" />
     			</form>
     		</fieldset>
     	</div>
