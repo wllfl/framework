@@ -58,18 +58,20 @@ class crud{
        $campos = "";   
        $valores = "";   
         
-       // Loop para montar a instrução com os campos e valores   
-       foreach($arrayDados as $chave => $valor):   
-        $campos .= $chave . ', ';   
-        $valores .= '?, ';   
+       // Loop para montar a instrução com os campos e valores 
+       $cont = 1;  
+       foreach($arrayDados as $chave => $valor):
+            if($cont < count($arrayDados)):
+                $campos .= $chave . ', ';   
+                $valores .= '?, ';   
+            else:
+                $campos .= $chave . ' ';   
+                $valores .= '?';   
+            endif;   
+        
+             $cont++;
        endforeach;   
-        
-       // Retira vírgula do final da string   
-       $campos = (substr($campos, -2) == ', ') ? trim(substr($campos, 0, (strlen($campos) - 2))) : $campos ;    
-        
-       // Retira vírgula do final da string   
-       $valores = (substr($valores, -2) == ', ') ? trim(substr($valores, 0, (strlen($valores) - 2))) : $valores ;    
-        
+
        // Concatena todas as variáveis e finaliza a instrução   
        $sql .= "INSERT INTO {$this->tabela} (" . $campos . ")VALUES(" . $valores . ")";   
         
@@ -90,22 +92,30 @@ class crud{
        $valCampos = "";   
        $valCondicao = "";   
         
-       // Loop para montar a instrução com os campos e valores   
-       foreach($arrayDados as $chave => $valor):   
-          $valCampos .= $chave . '=?, ';   
+       // Loop para montar a instrução com os campos e valores 
+       $cont = 1;  
+       foreach($arrayDados as $chave => $valor): 
+          if($cont < count($arrayDados)):
+             $valCampos .= $chave . '=?, '; 
+          else:
+             $valCampos .= $chave . '=?'; 
+          endif; 
+
+          $cont++;  
        endforeach;   
         
-       // Loop para montar a condição WHERE   
-       foreach($arrayCondicao as $chave => $valor):   
-          $valCondicao .= $chave . '? AND ';   
+       // Loop para montar a condição WHERE
+       $cont = 1;   
+       foreach($arrayCondicao as $chave => $valor): 
+           if($cont < count($arrayCondicao)):
+               $valCondicao .= $chave . '? AND ';   
+           else:
+               $valCondicao .= $chave . '?';   
+           endif;
+  
+          $cont++;
        endforeach;   
-        
-       // Retira vírgula do final da string   
-       $valCampos = (substr($valCampos, -2) == ', ') ? trim(substr($valCampos, 0, (strlen($valCampos) - 2))) : $valCampos ;    
-        
-       // Retira AND do final da string   
-       $valCondicao = (substr($valCondicao, -4) == 'AND ') ? trim(substr($valCondicao, 0, (strlen($valCondicao) - 4))) : $valCondicao ;    
-        
+   
        // Concatena todas as variáveis e finaliza a instrução   
        $sql .= "UPDATE {$this->tabela} SET " . $valCampos . " WHERE " . $valCondicao;   
         
@@ -124,14 +134,18 @@ class crud{
        $sql = "";   
        $valCampos= "";   
         
-       // Loop para montar a instrução com os campos e valores   
-       foreach($arrayCondicao as $chave => $valor):   
-         $valCampos .= $chave . '? AND ';   
+       // Loop para montar a instrução com os campos e valores 
+       $cont = 1;  
+       foreach($arrayCondicao as $chave => $valor):
+           if($cont < count($arrayCondicao)):   
+              $valCampos .= $chave . '? AND '; 
+           else:
+              $valCampos .= $chave . '?'; 
+           endif;
+
+         $cont++;  
        endforeach;   
-        
-       // Retira a palavra AND do final da string   
-       $valCampos = (substr($valCampos, -4) == 'AND ') ? trim(substr($valCampos, 0, (strlen($valCampos) - 4))) : $valCampos ;    
-        
+
        // Concatena todas as variáveis e finaliza a instrução   
        $sql .= "DELETE FROM {$this->tabela} WHERE " . $valCampos;   
         
@@ -187,16 +201,16 @@ class crud{
     
         // Loop para passar os dados como parâmetro   
         $cont = 1;   
-              foreach ($arrayDados as $valor):   
-                $stm->bindValue($cont, $valor);   
-                $cont++;   
-              endforeach;   
-              
-              // Loop para passar os dados como parâmetro cláusula WHERE   
-              foreach ($arrayCondicao as $valor):   
-                $stm->bindValue($cont, $valor);   
-                $cont++;   
-              endforeach;   
+        foreach ($arrayDados as $valor):   
+          $stm->bindValue($cont, $valor);   
+          $cont++;   
+        endforeach;   
+        
+        // Loop para passar os dados como parâmetro cláusula WHERE   
+        foreach ($arrayCondicao as $valor):   
+          $stm->bindValue($cont, $valor);   
+          $cont++;   
+        endforeach;   
     
         // Executa a instrução SQL e captura o retorno   
         $retorno = $stm->execute();   
@@ -222,12 +236,12 @@ class crud{
         // Passa a instrução para o PDO   
         $stm = $this->pdo->prepare($sql);   
     
-              // Loop para passar os dados como parâmetro cláusula WHERE   
-              $cont = 1;   
-              foreach ($arrayCondicao as $valor):   
-                $stm->bindValue($cont, $valor);   
-                $cont++;   
-              endforeach;   
+        // Loop para passar os dados como parâmetro cláusula WHERE   
+        $cont = 1;   
+        foreach ($arrayCondicao as $valor):   
+          $stm->bindValue($cont, $valor);   
+          $cont++;   
+        endforeach;   
     
         // Executa a instrução SQL e captura o retorno   
         $retorno = $stm->execute();   

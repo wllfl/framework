@@ -100,14 +100,18 @@ class controller{
 	   // Atribuindo qual será o campos de retorno, para não usar SELECT *
 	   $campo = str_replace(array('<', '>', '=', '!'), "", key($this->arrayCondicaoDuplicidade));
 
-	   // Loop para montar a condição WHERE   
-	   foreach($this->arrayCondicaoDuplicidade as $chave => $valor):   
-	       $valCondicao .= $chave . '? AND ';   
+	   // Loop para montar a condição WHERE
+	   $cont = 1;   
+	   foreach($this->arrayCondicaoDuplicidade as $chave => $valor):  
+	   		if ($cont < count($this->arrayCondicaoDuplicidade)):
+	   			$valCondicao .= $chave . '? AND '; 
+	   		else:
+	   			$valCondicao .= $chave . '?'; 
+	   		endif; 
+	       
+	       $cont++;  
 	   endforeach;
-
-	   // Retira AND do final da string   
-	   $valCondicao = (substr($valCondicao, -4) == 'AND ') ? trim(substr($valCondicao, 0, (strlen($valCondicao) - 4))) : $valCondicao ;     
-
+	   
 	   $sql = "SELECT $campo FROM $this->tabela WHERE " . $valCondicao; 
 	   $retorno = $this->crud->getSQLGeneric($sql, $this->arrayCondicaoDuplicidade, TRUE);
 	   
