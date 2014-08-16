@@ -31,7 +31,7 @@ class controller{
 	* @param $tabela - Contém o nome da tabela onde serão manipulados os dados
 	*/
 	public function __construct($tabela=null){
-		if(!empty($tableName)) $this->tabela = $tabela;
+		if(!empty($tabela)) $this->tabela = $tabela;
 		$this->crud = new Crud($tabela);
 	}
 
@@ -97,15 +97,18 @@ class controller{
 	private function verificaDuplicidade(){
 		$valCondicao = "";
 
+	   // Atribuindo qual será o campos de retorno, para não usar SELECT *
+	   $campo = str_replace(array('<', '>', '=', '!'), "", key($this->arrayCondicaoDuplicidade));
+
 	   // Loop para montar a condição WHERE   
 	   foreach($this->arrayCondicaoDuplicidade as $chave => $valor):   
 	       $valCondicao .= $chave . '? AND ';   
 	   endforeach;
 
 	   // Retira AND do final da string   
-	   $valCondicao = (substr($valCondicao, -4) == 'AND ') ? trim(substr($valCondicao, 0, (strlen($valCondicao) - 4))) : $valCondicao ;    
-	    
-	   $sql = "SELECT * FROM $this->tabela WHERE " . $valCondicao; 
+	   $valCondicao = (substr($valCondicao, -4) == 'AND ') ? trim(substr($valCondicao, 0, (strlen($valCondicao) - 4))) : $valCondicao ;     
+
+	   $sql = "SELECT $campo FROM $this->tabela WHERE " . $valCondicao; 
 	   $retorno = $this->crud->getSQLGeneric($sql, $this->arrayCondicaoDuplicidade, TRUE);
 	   
 	   // Verifica se a consulta retornou vazia, se verdadeira retorna TRUE
