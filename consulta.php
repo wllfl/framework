@@ -2,14 +2,23 @@
 session_start();
 header('Content-Type: text/html; charset=utf-8');
 require_once "classes/controller.class.php";
+define('LIMITE', '4');
+
+// Paginação para o banco de dados PostgreSQL
+$page = (isset($_GET['page'])) ? $_GET['page'] : 1;
+$offset = LIMITE;
+$inicio = ($page * LIMITE) - LIMITE; 
 
 /*
 * Instância o objeto controller e executa uma consulta
 */
 $controller = new controller();
-$sql = "SELECT * FROM tab_usuario";
+$sql = "SELECT * FROM tab_usuario ORDER BY id LIMIT $offset OFFSET $inicio";
 $dados = $controller->getDados($sql);
 
+$sqlCount = "SELECT COUNT(*) as total FROM tab_usuario";
+$retorno = $controller->getDados($sqlCount, null, FALSE);
+$contador = ceil($retorno->total / LIMITE);
 ?>
 <!DOCTYPE html>
 <html>
@@ -24,7 +33,7 @@ $dados = $controller->getDados($sql);
     		<fieldset class='box-consulta'>
     			<legend align="center">Usuários Cadastrados</legend>
                 <span class='msg-servidor'><?php echo (isset($_SESSION['MENSAGEM'])) ? $_SESSION['MENSAGEM'] : ''; ?></span>
-    			<table border="1" width="880">
+    			<table border="1" width="860">
     				<thead>
     					<tr>
     						<th align="center">Id</th>
@@ -51,7 +60,11 @@ $dados = $controller->getDados($sql);
     					<?php endforeach; ?>
     				</tbody>
     			</table>
-                <br>
+                <div id="box-paginacao">
+                    <?php for ($i=1; $i <= $contador; $i++):?> 
+                       <a href="consulta.php?page=<?=$i?>" class='link-paginacao <?=($page == $i) ? 'page-atual': '';?>'><?=$i?></a>
+                    <?php endfor;?>
+                </div>
                 <input type='button' name='cadastro' id='cadastro' value='Cadastrar Usuário' onclick="window.location='index.php'" />
     		</fieldset>
     	</div>

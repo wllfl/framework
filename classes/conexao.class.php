@@ -59,5 +59,6 @@ class conexao {
         }
         return self::$pdo;
     }
+
 }
 

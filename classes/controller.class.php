@@ -111,7 +111,7 @@ class controller{
 	       
 	       $cont++;  
 	   endforeach;
-	   
+
 	   $sql = "SELECT $campo FROM $this->tabela WHERE " . $valCondicao; 
 	   $retorno = $this->crud->getSQLGeneric($sql, $this->arrayCondicaoDuplicidade, TRUE);
 	   
@@ -133,7 +133,7 @@ class controller{
 	    	if ($this->validaArray($arrayDados)):
 	    		if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
 		    	    if($this->verificaDuplicidade()):
-		    		   return helper_format::printMsgErro('Está operação está duplicando registros!');
+		    		   return helper_format::printMsgErro('Inclusão cancelada, está duplicando registros!');
 		    		   exit();
 		    	    endif;
 		    	endif;
