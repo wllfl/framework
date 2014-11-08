@@ -83,7 +83,7 @@ class helper_format{
 	* @return String - String contendo formatação HTML e CSS
 	*/
 	public static function printMsgConfim($texto){
-		return self::loadCss() . "<span class='msg-conf msg'>{$texto}</span>";
+		return $texto;
 	}
 
 	/*
@@ -92,7 +92,7 @@ class helper_format{
 	* @return String - String contendo formatação HTML e CSS
 	*/
 	public static function printMsgAviso($texto){
-		return self::loadCss() . "<span class='msg-aviso msg'>{$texto}</span>";
+		return $texto;
 	}
 
 	/*
@@ -101,18 +101,7 @@ class helper_format{
 	* @return String - String contendo formatação HTML e CSS
 	*/
 	public static function printMsgErro($texto){
-		return self::loadCss() . "<span class='msg-erro msg'>{$texto}</span>";
+		return $texto;
 	}
 
-	/*
-	* Método estático para setar o arquivo CSS para estilizar as mensagens
-	* @return String - String contendo o código CSS
-	*/
-	private static function loadCSS(){
-		$retorno = "<style type='text/css'>";
-		$retorno .= file_get_contents(realpath("classes/helper/estilo-controller.css"));
-		$retorno .= "</style>";
-
-		return $retorno;
-	}
 }
