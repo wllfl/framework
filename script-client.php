@@ -37,7 +37,8 @@ if($acao == 'incluir'):
 			'data' => helper_format::dataBrToEng($data)
 		);
 
-	$_SESSION['MENSAGEM'] = $controller->insert($array);
+	$retorno = $controller->insert($array);
+	$_SESSION['MENSAGEM'] = $retorno['mensagem'];
 	echo "<script>window.location='index.php'</script>";
 endif;
 
@@ -52,15 +53,17 @@ if($acao == 'editar'):
 			'privilegio' => $privilegio
 		);
 
-	$_SESSION['MENSAGEM'] = $controller->update($array, $condicao);
+	$retorno = $controller->update($array, $condicao);
+	$_SESSION['MENSAGEM'] = $retorno['mensagem'];
 	echo "<script>window.location='index.php'</script>";
 endif;
 
 
 // Verifica se foi requisitada uma exclusão de registros
 if($acao == 'excluir'):
-	$condicao = array('id=' => $id);
-	$_SESSION['MENSAGEM'] = $controller->delete($condicao);
+	$condicao = array('id=' => $id); 
+	$retorno = $controller->delete($condicao);
+	$_SESSION['MENSAGEM'] = $retorno['mensagem'];
 	echo "<script>window.location='consulta.php'</script>";
 endif;
 

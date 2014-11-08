@@ -133,23 +133,29 @@ class controller{
 	    	if ($this->validaArray($arrayDados)):
 	    		if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
 		    	    if($this->verificaDuplicidade()):
-		    		   return helper_format::printMsgErro('Inclusão cancelada, está duplicando registros!');
-		    		   exit();
+		    		   $array_retorno = array('codigo' => 0, 'mensagem' => 'Inclusão cancelada, está duplicando registros!');
+		    		   return $array_retorno;
+	    			   exit();
 		    	    endif;
 		    	endif;
 
 	    		$retorno = $this->crud->insert($arrayDados);
 	    		if($retorno == 1):
-	    			return helper_format::printMsgConfim('Registro incluído com sucesso!');
+	    			$array_retorno = array('codigo' => 1, 'mensagem' => 'Registro incluído com sucesso!');
+	    			return $array_retorno;
 	    		else:
-	    			return helper_format::printMsgErro('Houve um erro ao executar operação!');
+	    			$array_retorno = array('codigo' => 2, 'mensagem' => 'Houve um erro interno ao executar operação!');
+	    			return $array_retorno;
 	    		endif;
 	    	else:
-	    		return helper_format::printMsgAviso('Existem campos sem preenchimento!');
+	    		$array_retorno = array('codigo' => 3, 'mensagem' => 'Existem campos sem preenchimento!');
+	    		return $array_retorno;
 	    		exit();
 	    	endif;	
 	    }catch(Exception $e){
-	    	return helper_format::printMsgErro('Erro: ' . $e->getMessage());
+	    	$erro = 'Erro: ' . $e->getMessage();
+	    	$array_retorno = array('codigo' => 4, 'mensagem' => $erro);
+	    	return $array_retorno;
 	    }
     }
 
@@ -163,16 +169,21 @@ class controller{
 	    	if ($this->validaArray($arrayDados)):
 	    		$retorno = $this->crud->update($arrayDados, $arrayCondicao);
 	    		if($retorno == 1):
-	    			return helper_format::printMsgConfim('Registro alterado com sucesso!');
+	    			$array_retorno = array('codigo' => 1, 'mensagem' => 'Registro alterado com sucesso!');
+	    			return $array_retorno;
 	    		else:
-	    			return helper_format::printMsgErro('Houve um erro ao executar operação!');
+	    			$array_retorno = array('codigo' => 2, 'mensagem' => 'Houve um erro interno ao executar operação!');
+	    			return $array_retorno;
 	    		endif;
 	    	else:
-	    		return helper_format::printMsgAviso('Existem campos sem preenchimento!');
+	    		$array_retorno = array('codigo' => 3, 'mensagem' => 'Existem campos sem preenchimento!');
+	    		return $array_retorno;
 	    		exit();
 	    	endif;
     	}catch(Exception $e){
-	    	return helper_format::printMsgErro('Erro: ' . $e->getMessage());
+	    	$erro = 'Erro: ' . $e->getMessage();
+	    	$array_retorno = array('codigo' => 4, 'mensagem' => $erro);
+	    	return $array_retorno;
 	    }
     }
 
@@ -186,16 +197,21 @@ class controller{
 	    	if ($this->validaArray($arrayCondicao)):
 	    		$retorno = $this->crud->delete($arrayCondicao);
 	    		if($retorno == 1):
-	    			return helper_format::printMsgConfim('Registro excluído com sucesso!');
+	    			$array_retorno = array('codigo' => 1, 'mensagem' => 'Registro excluído com sucesso!');
+	    			return $array_retorno;
 	    		else:
-	    			return helper_format::printMsgErro('Houve um erro ao executar operação!');
+	    			$array_retorno = array('codigo' => 2, 'mensagem' => 'Houve um erro interno ao executar operação!');
+	    			return $array_retorno;
 	    		endif;
 	    	else:
-	    		return helper_format::printMsgAviso('Existem campos sem preenchimento!');
+	    		$array_retorno = array('codigo' => 3, 'mensagem' => 'Existem campos sem preenchimento!');
+	    		return $array_retorno;
 	    		exit();
 	    	endif;
     	}catch(Exception $e){
-	    	return helper_format::printMsgErro('Erro: ' . $e->getMessage());
+	    	$erro = 'Erro: ' . $e->getMessage();
+	    	$array_retorno = array('codigo' => 4, 'mensagem' => $erro);
+	    	return $array_retorno;
 	    }
     }
 
@@ -213,7 +229,9 @@ class controller{
    				return $retorno;
    			endif;
    		}catch(Exception $e){
-	    	return helper_format::printMsgErro('Erro: ' . $e->getMessage());
+	    	$erro = 'Erro: ' . $e->getMessage();
+	    	$array_retorno = array('codigo' => 4, 'mensagem' => $erro);
+	    	return $array_retorno;
 	    }
    } 
 }
