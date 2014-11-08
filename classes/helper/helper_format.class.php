@@ -77,31 +77,4 @@ class helper_format{
         return $texto;
 	}
 
-	/*
-	* Método estático para imprimir mensagem de Confirmação estilizada
-	* @param $texto - String com o texto a ser exibido
-	* @return String - String contendo formatação HTML e CSS
-	*/
-	public static function printMsgConfim($texto){
-		return $texto;
-	}
-
-	/*
-	* Método estático para imprimir mensagem de Aviso estilizada
-	* @param $texto - String com o texto a ser exibido
-	* @return String - String contendo formatação HTML e CSS
-	*/
-	public static function printMsgAviso($texto){
-		return $texto;
-	}
-
-	/*
-	* Método estático para imprimir mensagem de Erro estilizada
-	* @param $texto - String com o texto a ser exibido
-	* @return String - String contendo formatação HTML e CSS
-	*/
-	public static function printMsgErro($texto){
-		return $texto;
-	}
-
 }

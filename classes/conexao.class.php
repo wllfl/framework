@@ -1,4 +1,4 @@
-<?php
+﻿<?php
  /*************************************************************************************************************  
  * @author William F. Leite                                                                                   *  
  * Data: 20/06/2014                                                                                           *  
@@ -11,7 +11,7 @@
 /*
  * Constantes de parâmetros para configuração da conexão
  */
-define('SGBD', 'postgre');
+define('SGBD', 'mssql');
 define('HOST', 'localhost');
 define('DBNAME', 'db_blog');
 define('CHARSET', 'utf8');
@@ -33,10 +33,36 @@ class conexao {
     }
 
     /*
+     * Método privado para verificar se a extensão PDO do banco de dados escolhido
+     * está habilitada
+     */
+    private static function verificaExtensao() {
+
+        switch(SGBD):
+            case 'mysql':
+                $extensao = 'pdo_mysql';
+                break;
+            case 'mssql':
+                $extensao = 'pdo_sqlsrv';
+                break;
+            case 'postgre':
+                $extensao = 'pdo_pgsql';
+                break;
+        endswitch;
+
+        if(!extension_loaded($extensao)):
+            echo "Extensão {$extensao} não habilitada!";
+            exit();
+        endif;
+    }
+
+    /*
      * Método estático para retornar uma conexão válida
      * Verifica se já existe uma instância da conexão, caso não, configura uma nova conexão
      */
     public static function getInstance() {
+
+        self::verificaExtensao();
 
         if (!isset(self::$pdo)) {
             try {
@@ -61,4 +87,5 @@ class conexao {
     }
 
 }
+
 
