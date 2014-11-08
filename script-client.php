@@ -27,6 +27,20 @@ $arrayNull = array('privilegio');
 $controller->setCondicaoDuplicidade($arrayCondicaoDuplicidade);
 $controller->setNullAceito($arrayNull);
 
+/*
+* Array associativo retornado pelas instruções CRUD contém 2 elementos
+*
+* codigo:
+* 0 -> Operação duplicando registros
+* 1 -> Operação efetuada com sucesso
+* 2 -> Erro interno da instrução SQL
+* 3 -> Campos de preechimento obigatório sem preenchimento 
+* 4 -> Erro capturados pelo bloco try..catch 
+*
+* mensagem:
+* As mensagem tem como objetivo ilustrar melhor o erro encontrado e facilitar a depuração.
+*/
+
 // Verifica se foi requisitada uma inclusão de registros
 if($acao == 'incluir'):
 	$array = array(
