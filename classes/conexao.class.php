@@ -13,10 +13,11 @@
  */
 define('SGBD', 'mssql');
 define('HOST', 'localhost');
-define('DBNAME', 'db_blog');
+define('DBNAME', 'teste');
 define('CHARSET', 'utf8');
-define('USER', 'postgres');
-define('PASSWORD', '011224');
+define('USER', 'user_geral');
+define('PASSWORD', '2222');
+define('SERVER', 'windows');
 
 class conexao {
     
@@ -42,9 +43,14 @@ class conexao {
             case 'mysql':
                 $extensao = 'pdo_mysql';
                 break;
-            case 'mssql':
-                $extensao = 'pdo_sqlsrv';
+            case 'mssql':{
+                if(SERVER == 'linux'):
+                    $extensao = 'pdo_dblib';
+                else:
+                    $extensao = 'pdo_sqlsrv';
+                endif;
                 break;
+            }
             case 'postgre':
                 $extensao = 'pdo_pgsql';
                 break;
@@ -71,9 +77,14 @@ class conexao {
                     case 'mysql':
                         self::$pdo = new PDO("mysql:host=" . HOST . "; dbname=" . DBNAME . ";", USER, PASSWORD, $opcoes);
                         break;
-                    case 'mssql':
-                        self::$pdo = new PDO("sqlsrv:server=" . HOST . "; database=" . DBNAME . ";", USER, PASSWORD, $opcoes);
+                    case 'mssql':{
+                        if(SERVER == 'linux'):
+                            self::$pdo = new PDO("dblib:host=" . HOST . "; database=" . DBNAME . ";", USER, PASSWORD, $opcoes);
+                        else:
+                            self::$pdo = new PDO("sqlsrv:server=" . HOST . "; database=" . DBNAME . ";", USER, PASSWORD, $opcoes);
+                        endif;
                         break;
+                    }
                     case 'postgre':
                         self::$pdo = new PDO("pgsql:host=" . HOST . "; dbname=" . DBNAME . ";", USER, PASSWORD, $opcoes);
                         break;
@@ -87,5 +98,9 @@ class conexao {
     }
 
 }
+
+$pdo = conexao::getInstance();
+$dados = $pdo->query("SELECT * FROM mensagens_internas");
+var_dump($dados);
 
 
