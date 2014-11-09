@@ -99,8 +99,5 @@ class conexao {
 
 }
 
-$pdo = conexao::getInstance();
-$dados = $pdo->query("SELECT * FROM mensagens_internas");
-var_dump($dados);
 
 
