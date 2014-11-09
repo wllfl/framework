@@ -26,12 +26,16 @@ class controller{
 	// Atributo privado contém array com condição para verificação de duplicidade
 	private $arrayCondicaoDuplicidade = null;
 
+	// Atributo privado contendo o nome do campo chave primária da tabela
+	private $field_pk = null;
+
 	/*
 	* Método construtor da classe
 	* @param $tabela - Contém o nome da tabela onde serão manipulados os dados
 	*/
-	public function __construct($tabela=null){
-		if(!empty($tabela)) $this->tabela = $tabela;
+	public function __construct($tabela=null, $field_pk=null){
+		$this->setTableName($tabela);
+		$this->setFieldPK($field_pk);
 		$this->crud = new Crud($tabela);
 	}
 
@@ -41,7 +45,17 @@ class controller{
 	*/
 	public function setTableName($tableName){
 		if(!empty($tableName)):
-			$this->$tabela = $tableName;
+			$this->tabela = $tableName;
+		endif;
+	}
+
+	/*
+	* Método público para setar o nome da campo que é chave primária da tabela
+	* @param $field_pk- String contendo o nome da chave primária tabela
+	*/
+	public function setFieldPK($field_pk){
+		if(!empty($field_pk)):
+			$this->field_pk = $field_pk;
 		endif;
 	}
 
@@ -89,10 +103,8 @@ class controller{
 	}
 
 	/* 
-	* Método para verificar duplicidade de registros
-	* @param $coluna = Colunas de retorno separadas por vírgula
-	* @param $arrayCondicao = Array de dados contendo colunas e valores para condição WHERE - Exemplo array('$id='=>1)   
-	* retorna a quantidade de registros encontrados
+	* Método para verificar duplicidade de registros no momento INSERT
+	* retorna um valor booleano, se duplicado TRUE senão retorna FALSE
 	*/
 	private function verificaDuplicidade(){
 		$valCondicao = "";
@@ -112,7 +124,7 @@ class controller{
 	       $cont++;  
 	   endforeach;
 
-	   $sql = "SELECT $campo FROM $this->tabela WHERE " . $valCondicao; 
+	   $sql = "SELECT {$campo} FROM {$this->tabela} WHERE " . $valCondicao; 
 	   $retorno = $this->crud->getSQLGeneric($sql, $this->arrayCondicaoDuplicidade, TRUE);
 	   
 	   // Verifica se a consulta retornou vazia, se verdadeira retorna TRUE
@@ -121,6 +133,49 @@ class controller{
 	   else:
 	   		return TRUE;
 	   endif;
+	}
+
+	/* 
+	* Método para verificar duplicidade de registros no momento do Update
+	* retorna um valor booleano, se duplicado TRUE senão retorna FALSE
+	*/
+	private function verificaDuplicidadeUpdate($arrayDados, $valorCondicao){
+	   $valCondicao = "";
+	   $parametros = array();
+	   $valorPK = (String) $valorCondicao[key($valorCondicao)];
+
+	    // Loop para montar a condição WHERE
+	   $cont = 1;   
+	   foreach($this->arrayCondicaoDuplicidade as $chave => $valor):  
+	   		if ($cont < count($this->arrayCondicaoDuplicidade)):
+	   			$valCondicao .= $chave . '? AND '; 
+	   		else:
+	   			$valCondicao .= $chave . '?'; 
+	   		endif; 
+
+	   		$key = str_replace(array('<', '>', '=', '!'), "", $chave);
+	   		if (array_key_exists($key, $arrayDados)):
+				$parametros[] = $arrayDados[$key];
+			endif;
+	       
+	       $cont++;  
+	   endforeach;
+
+	   $sql = "SELECT {$this->field_pk} FROM {$this->tabela} WHERE " . $valCondicao; 
+	   $dados = $this->crud->getSQLGeneric($sql, $parametros, TRUE);
+	   $pk = $this->field_pk;
+	   $valorRetorno = (String) $dados[0]->$pk;
+
+	   // Verifica se a consulta retornou dados e compara com o valor passado como condição para o update
+	   if(empty($dados)):
+	   		return FALSE;
+	   else:
+		   if($valorRetorno != $valorPK || count($dados) > 1):
+		   		return TRUE;
+		   else:
+			    return FALSE;
+		   endif;
+		endif;
 	}
 
     /* 
@@ -164,9 +219,17 @@ class controller{
     * @param $arrayDados = Array de dados contendo colunas e valor
     * @param $arrayCondicao = Array de dados contendo colunas e valores para condição WHERE - Exemplo array('$id='=>1)   
     */
-    public function update($arrayDados, $arrayCondicao){
+    public function update($arrayDados, $arrayCondicao, $duplicidade=TRUE){
     	try{
 	    	if ($this->validaArray($arrayDados)):
+	    		if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
+	    			if($this->verificaDuplicidadeUpdate($arrayDados, $arrayCondicao)):
+	    			   $array_retorno = array('codigo' => 0, 'mensagem' => 'Edição cancelada, está duplicando registros!');
+		    		   return $array_retorno;
+	    			   exit();
+			    	endif;
+			    endif;
+
 	    		$retorno = $this->crud->update($arrayDados, $arrayCondicao);
 	    		if($retorno == 1):
 	    			$array_retorno = array('codigo' => 1, 'mensagem' => 'Registro alterado com sucesso!');

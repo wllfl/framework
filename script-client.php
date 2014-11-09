@@ -21,7 +21,7 @@ $data	     = date('d/m/Y');
 * Campos que deverão ser comparados para identificar duplicidade de registros
 * Campos que podem ser inseridos como NULL
 */
-$controller = new controller('tab_usuario');
+$controller = new controller('tab_usuario', 'id');
 $arrayCondicaoDuplicidade = array('nome=' => $nome, 'email=' => $email);
 $arrayNull = array('privilegio');
 $controller->setCondicaoDuplicidade($arrayCondicaoDuplicidade);

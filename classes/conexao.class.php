@@ -11,13 +11,13 @@
 /*
  * Constantes de parâmetros para configuração da conexão
  */
-define('SGBD', 'mssql');
+define('SGBD', 'postgre');
 define('HOST', 'localhost');
-define('DBNAME', 'teste');
+define('DBNAME', 'db_blog');
 define('CHARSET', 'utf8');
-define('USER', 'user_geral');
-define('PASSWORD', '2222');
-define('SERVER', 'windows');
+define('USER', 'postgres');
+define('PASSWORD', '011224');
+define('SERVER', 'linux');
 
 class conexao {
     
