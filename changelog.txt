@@ -1,3 +1,7 @@
 09-11-2014: 
 - Adição da funcionalidade para evitar duplicação de registro no momento da edição.
-- Adição da propriedade field_pk na classe controller e como parâmeetro do construtor da classe
+- Adição da propriedade field_pk na classe controller e como parâmeetro do construtor da classe,
+
+10-11-2014:
+- Revisão dos comentários 
+- Adição da tag <h1> para retorno da mensagem de erro quando a extensão não estiver habilitada

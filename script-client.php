@@ -17,12 +17,13 @@ $privilegio  = (isset($_POST['privilegio'])) ? $_POST['privilegio'] : '';
 $data	     = date('d/m/Y');
 
 /*
-* Instâncio o objeto controller e configuro a opções de 
+* Instâncio o objeto controller passando como parâmetros o nome da tabela e nome do campo que é chave primária, após
+* configuro o objeto com as seguintes opções:
 * Campos que deverão ser comparados para identificar duplicidade de registros
 * Campos que podem ser inseridos como NULL
 */
 $controller = new controller('tab_usuario', 'id');
-$arrayCondicaoDuplicidade = array('nome=' => $nome, 'email=' => $email);
+$arrayCondicaoDuplicidade = array('nome=' => $nome, 'privilegio=' => $privilegio);
 $arrayNull = array('privilegio');
 $controller->setCondicaoDuplicidade($arrayCondicaoDuplicidade);
 $controller->setNullAceito($arrayNull);
@@ -51,6 +52,12 @@ if($acao == 'incluir'):
 			'data' => helper_format::dataBrToEng($data)
 		);
 
+	/*
+	* O método insert() possui o último parâmetro booleano como defaulT TRUE, esse valor indica 
+	* que será necessário comparar se os valores que estão sendo inseridos já existem no banco de dados, se existirem
+	* o método não completa o INSERT e retorna um array com o código e a mensagem de erro, senão
+	* quiser essa verificação basta passar mais um parâmetro como FALSE, não será verificado duplicidade
+	*/
 	$retorno = $controller->insert($array);
 	$_SESSION['MENSAGEM'] = $retorno['mensagem'];
 	echo "<script>window.location='index.php'</script>";
@@ -67,6 +74,12 @@ if($acao == 'editar'):
 			'privilegio' => $privilegio
 		);
 
+	/*
+	* O método update() possui o último parâmetro booleano como defaulT TRUE, esse valor indica 
+	* que será necessário comparar se os valores que estão sendo atualizados já existem no banco de dados, se existirem
+	* o método não completa o UPDATE e retorna um array com o código e a mensagem de erro, senão
+	* quiser essa verificação basta passar mais um parâmetro como FALSE, não será verificado duplicidade
+	*/
 	$retorno = $controller->update($array, $condicao);
 	$_SESSION['MENSAGEM'] = $retorno['mensagem'];
 	echo "<script>window.location='index.php'</script>";

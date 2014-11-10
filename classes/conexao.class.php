@@ -57,7 +57,7 @@ class conexao {
         endswitch;
 
         if(!extension_loaded($extensao)):
-            echo "Extensão {$extensao} não habilitada!";
+            echo "<h1>Extensão {$extensao} não habilitada!</h1>";
             exit();
         endif;
     }

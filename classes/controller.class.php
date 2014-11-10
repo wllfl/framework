@@ -2,7 +2,7 @@
 /*
 * Classe Controller para receber os dados da View (HTML) e transferir para classe Crud
 * também recebe os dados da classe Crud e transferi para View (HTML)
-* Após instância o objeto é necessário informar 2 arrays para configuração do objeto
+* Após instânciação do objeto é necessário informar 2 arrays para configuração do objeto
 * 1 - $arrayNullAceito informa quais os campos serão aceitos como nulos na validação da array antes do INSERT e UPDATE
 * 2 - $arrayCondicaoDuplicidade informas quais os campos, condições e valores para verificação de duplicidade de registros antes do INSERT
 */
@@ -137,6 +137,8 @@ class controller{
 
 	/* 
 	* Método para verificar duplicidade de registros no momento do Update
+	* @param $arrayDados = Array de dados contendo colunas e valor
+    * @param $valorCondicao = Array de dados contendo colunas e valor para condição WHERE - Exemplo array('$id='=>1) 
 	* retorna um valor booleano, se duplicado TRUE senão retorna FALSE
 	*/
 	private function verificaDuplicidadeUpdate($arrayDados, $valorCondicao){
