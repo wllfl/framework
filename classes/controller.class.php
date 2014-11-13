@@ -12,6 +12,14 @@ ini_set("display_errors", 1);
 require_once "crud.class.php";
 require_once "helper/helper_format.class.php";
 
+define("MSG_DUPLICACAO_INSERT", "Inclusão cancelada, está duplicando registros!");
+define("MSG_DUPLICACAO_UPDATE", "Edição cancelada, está duplicando registros!");
+define("MSG_ERRO_INTERNO", "Houve um erro interno ao executar operação!");
+define("MSG_SUCESSO_INSERT", "Registro incluído com sucesso!");
+define("MSG_SUCESSO_UPDATE", "Registro alterado com sucesso!");
+define("MSG_SUCESSO_DELETE", "Registro excluído com sucesso!");
+define("MSG_CAMPO_OBRIGATORIO", "Registro excluído com sucesso!");
+
 class controller{
 
 	// Atributo privado contendo instância da classe Crud
@@ -165,13 +173,13 @@ class controller{
 
 	   $sql = "SELECT {$this->field_pk} FROM {$this->tabela} WHERE " . $valCondicao; 
 	   $dados = $this->crud->getSQLGeneric($sql, $parametros, TRUE);
-	   $pk = $this->field_pk;
-	   $valorRetorno = (String) $dados[0]->$pk;
 
 	   // Verifica se a consulta retornou dados e compara com o valor passado como condição para o update
 	   if(empty($dados)):
 	   		return FALSE;
 	   else:
+		   $pk = $this->field_pk;
+		   $valorRetorno = $dados[0]->$pk;
 		   if($valorRetorno != $valorPK || count($dados) > 1):
 		   		return TRUE;
 		   else:
@@ -190,7 +198,7 @@ class controller{
 	    	if ($this->validaArray($arrayDados)):
 	    		if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
 		    	    if($this->verificaDuplicidade()):
-		    		   $array_retorno = array('codigo' => 0, 'mensagem' => 'Inclusão cancelada, está duplicando registros!');
+		    		   $array_retorno = array('codigo' => 0, 'mensagem' => MSG_DUPLICACAO_INSERT);
 		    		   return $array_retorno;
 	    			   exit();
 		    	    endif;
@@ -198,14 +206,14 @@ class controller{
 
 	    		$retorno = $this->crud->insert($arrayDados);
 	    		if($retorno == 1):
-	    			$array_retorno = array('codigo' => 1, 'mensagem' => 'Registro incluído com sucesso!');
+	    			$array_retorno = array('codigo' => 1, 'mensagem' => MSG_SUCESSO_INSERT);
 	    			return $array_retorno;
 	    		else:
-	    			$array_retorno = array('codigo' => 2, 'mensagem' => 'Houve um erro interno ao executar operação!');
+	    			$array_retorno = array('codigo' => 2, 'mensagem' => MSG_ERRO_INTERNO);
 	    			return $array_retorno;
 	    		endif;
 	    	else:
-	    		$array_retorno = array('codigo' => 3, 'mensagem' => 'Existem campos sem preenchimento!');
+	    		$array_retorno = array('codigo' => 3, 'mensagem' => MSG_CAMPO_OBRIGATORIO);
 	    		return $array_retorno;
 	    		exit();
 	    	endif;	
@@ -226,7 +234,7 @@ class controller{
 	    	if ($this->validaArray($arrayDados)):
 	    		if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
 	    			if($this->verificaDuplicidadeUpdate($arrayDados, $arrayCondicao)):
-	    			   $array_retorno = array('codigo' => 0, 'mensagem' => 'Edição cancelada, está duplicando registros!');
+	    			   $array_retorno = array('codigo' => 0, 'mensagem' => MSG_DUPLICACAO_UPDATE);
 		    		   return $array_retorno;
 	    			   exit();
 			    	endif;
@@ -234,14 +242,14 @@ class controller{
 
 	    		$retorno = $this->crud->update($arrayDados, $arrayCondicao);
 	    		if($retorno == 1):
-	    			$array_retorno = array('codigo' => 1, 'mensagem' => 'Registro alterado com sucesso!');
+	    			$array_retorno = array('codigo' => 1, 'mensagem' => MSG_SUCESSO_UPDATE);
 	    			return $array_retorno;
 	    		else:
-	    			$array_retorno = array('codigo' => 2, 'mensagem' => 'Houve um erro interno ao executar operação!');
+	    			$array_retorno = array('codigo' => 2, 'mensagem' => MSG_ERRO_INTERNO);
 	    			return $array_retorno;
 	    		endif;
 	    	else:
-	    		$array_retorno = array('codigo' => 3, 'mensagem' => 'Existem campos sem preenchimento!');
+	    		$array_retorno = array('codigo' => 3, 'mensagem' => MSG_CAMPO_OBRIGATORIO);
 	    		return $array_retorno;
 	    		exit();
 	    	endif;
@@ -262,14 +270,14 @@ class controller{
 	    	if ($this->validaArray($arrayCondicao)):
 	    		$retorno = $this->crud->delete($arrayCondicao);
 	    		if($retorno == 1):
-	    			$array_retorno = array('codigo' => 1, 'mensagem' => 'Registro excluído com sucesso!');
+	    			$array_retorno = array('codigo' => 1, 'mensagem' => MSG_SUCESSO_DELETE);
 	    			return $array_retorno;
 	    		else:
-	    			$array_retorno = array('codigo' => 2, 'mensagem' => 'Houve um erro interno ao executar operação!');
+	    			$array_retorno = array('codigo' => 2, 'mensagem' => MSG_ERRO_INTERNO);
 	    			return $array_retorno;
 	    		endif;
 	    	else:
-	    		$array_retorno = array('codigo' => 3, 'mensagem' => 'Existem campos sem preenchimento!');
+	    		$array_retorno = array('codigo' => 3, 'mensagem' => MSG_ERRO_INTERNO);
 	    		return $array_retorno;
 	    		exit();
 	    	endif;
