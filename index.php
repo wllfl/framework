@@ -15,7 +15,7 @@
     */
     if (!empty($acao) && $acao == "editar"):
         $param = array($id);
-        $controller = new controller('tab_usuario', 'id');
+        $controller = new controller();
         $sql = "SELECT nome, senha, email, privilegio FROM tab_usuario WHERE id = ?";
         $dados = $controller->getDados($sql, $param, FALSE);
     endif;

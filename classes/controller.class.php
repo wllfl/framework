@@ -18,7 +18,7 @@ define("MSG_ERRO_INTERNO", "Houve um erro interno ao executar operação!");
 define("MSG_SUCESSO_INSERT", "Registro incluído com sucesso!");
 define("MSG_SUCESSO_UPDATE", "Registro alterado com sucesso!");
 define("MSG_SUCESSO_DELETE", "Registro excluído com sucesso!");
-define("MSG_CAMPO_OBRIGATORIO", "Registro excluído com sucesso!");
+define("MSG_CAMPO_OBRIGATORIO", "Existem campos obrigatórios sem preenchimento!");
 
 class controller{
 
@@ -35,7 +35,13 @@ class controller{
 	private $arrayCondicaoDuplicidade = null;
 
 	// Atributo privado contendo o nome do campo chave primária da tabela
-	private $field_pk = null;
+	private $fieldPk = null;
+
+	// Atributo privado com valor booleano indicando se será verificado campos nulos antes do INSERT ou UPDATE
+	public $verificaNull = TRUE;
+
+	// Atributo privado com valor booleano indicando se será verificado duplicidade de registros antes do INSERT ou UPDATE
+	public $verificaDuplicidade = TRUE;
 
 	/*
 	* Método construtor da classe
@@ -63,7 +69,27 @@ class controller{
 	*/
 	public function setFieldPK($field_pk){
 		if(!empty($field_pk)):
-			$this->field_pk = $field_pk;
+			$this->fieldPk = $field_pk;
+		endif;
+	}
+
+	/*
+	* Método público para setar o atributo de verificação para valores nulos
+	* @param $verificaNull - Valor booleano (TRUE verifica, FALSE não verifica)
+	*/
+	public function setVerificaNull($verificaNull){
+		if($verificaNull == TRUE || $verificaNull == FALSE):
+			$this->verificaNull = FALSE;
+		endif;
+	}
+
+	/*
+	* Método público para setar o atributo de verificação para registros duplicados
+	* @param $verificaDuplicidade - Valor booleano (TRUE verifica, FALSE não verifica)
+	*/
+	public function setVerificaDuplicidade($verificaDuplicidade){
+		if($verificaDuplicidade == TRUE || $verificaDuplicidade == FALSE):
+			$this->verificaDuplicidade = $verificaDuplicidade;
 		endif;
 	}
 
@@ -114,7 +140,7 @@ class controller{
 	* Método para verificar duplicidade de registros no momento INSERT
 	* retorna um valor booleano, se duplicado TRUE senão retorna FALSE
 	*/
-	private function verificaDuplicidade(){
+	private function verificaDuplicidadeInsert(){
 		$valCondicao = "";
 
 	   // Atribuindo qual será o campos de retorno, para não usar SELECT *
@@ -171,14 +197,14 @@ class controller{
 	       $cont++;  
 	   endforeach;
 
-	   $sql = "SELECT {$this->field_pk} FROM {$this->tabela} WHERE " . $valCondicao; 
+	   $sql = "SELECT {$this->fieldPk} FROM {$this->tabela} WHERE " . $valCondicao; 
 	   $dados = $this->crud->getSQLGeneric($sql, $parametros, TRUE);
 
 	   // Verifica se a consulta retornou dados e compara com o valor passado como condição para o update
 	   if(empty($dados)):
 	   		return FALSE;
 	   else:
-		   $pk = $this->field_pk;
+		   $pk = $this->fieldPk;
 		   $valorRetorno = $dados[0]->$pk;
 		   if($valorRetorno != $valorPK || count($dados) > 1):
 		   		return TRUE;
@@ -193,30 +219,31 @@ class controller{
     * @param $arrayDados = Array de dados contendo colunas e valor
     * @param $duplicidade = Valor booleano TRUE obriga a verificação de duplicidade antes de inserir
     */
-    public function insert($arrayDados, $duplicidade=TRUE){
+    public function insert($arrayDados){
     	try{
-	    	if ($this->validaArray($arrayDados)):
-	    		if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
-		    	    if($this->verificaDuplicidade()):
-		    		   $array_retorno = array('codigo' => 0, 'mensagem' => MSG_DUPLICACAO_INSERT);
-		    		   return $array_retorno;
-	    			   exit();
-		    	    endif;
-		    	endif;
+    		$this->verificaConfig();
 
-	    		$retorno = $this->crud->insert($arrayDados);
-	    		if($retorno == 1):
-	    			$array_retorno = array('codigo' => 1, 'mensagem' => MSG_SUCESSO_INSERT);
-	    			return $array_retorno;
-	    		else:
-	    			$array_retorno = array('codigo' => 2, 'mensagem' => MSG_ERRO_INTERNO);
-	    			return $array_retorno;
-	    		endif;
-	    	else:
-	    		$array_retorno = array('codigo' => 3, 'mensagem' => MSG_CAMPO_OBRIGATORIO);
+    		if($this->verificaNull == TRUE && $this->validaArray($arrayDados) == FALSE):
+    			$array_retorno = array('codigo' => 3, 'mensagem' => MSG_CAMPO_OBRIGATORIO);
 	    		return $array_retorno;
 	    		exit();
-	    	endif;	
+    		endif;
+
+    		if($this->verificaDuplicidade == TRUE && $this->verificaDuplicidadeInsert() == TRUE):
+    		   $array_retorno = array('codigo' => 0, 'mensagem' => MSG_DUPLICACAO_INSERT);
+    		   return $array_retorno;
+			   exit();
+    		endif;
+
+    		$retorno = $this->crud->insert($arrayDados);
+    		if($retorno == 1):
+    			$array_retorno = array('codigo' => 1, 'mensagem' => MSG_SUCESSO_INSERT);
+    			return $array_retorno;
+    		else:
+    			$array_retorno = array('codigo' => 2, 'mensagem' => MSG_ERRO_INTERNO);
+    			return $array_retorno;
+    		endif;
+
 	    }catch(Exception $e){
 	    	$erro = 'Erro: ' . $e->getMessage();
 	    	$array_retorno = array('codigo' => 4, 'mensagem' => $erro);
@@ -231,28 +258,29 @@ class controller{
     */
     public function update($arrayDados, $arrayCondicao, $duplicidade=TRUE){
     	try{
-	    	if ($this->validaArray($arrayDados)):
-	    		if($duplicidade == TRUE && !empty($this->arrayCondicaoDuplicidade)):
-	    			if($this->verificaDuplicidadeUpdate($arrayDados, $arrayCondicao)):
-	    			   $array_retorno = array('codigo' => 0, 'mensagem' => MSG_DUPLICACAO_UPDATE);
-		    		   return $array_retorno;
-	    			   exit();
-			    	endif;
-			    endif;
+    		$this->verificaConfig();
 
-	    		$retorno = $this->crud->update($arrayDados, $arrayCondicao);
-	    		if($retorno == 1):
-	    			$array_retorno = array('codigo' => 1, 'mensagem' => MSG_SUCESSO_UPDATE);
-	    			return $array_retorno;
-	    		else:
-	    			$array_retorno = array('codigo' => 2, 'mensagem' => MSG_ERRO_INTERNO);
-	    			return $array_retorno;
-	    		endif;
-	    	else:
-	    		$array_retorno = array('codigo' => 3, 'mensagem' => MSG_CAMPO_OBRIGATORIO);
+    		if($this->verificaNull == TRUE && $this->validaArray($arrayDados) == FALSE):
+    			$array_retorno = array('codigo' => 3, 'mensagem' => MSG_CAMPO_OBRIGATORIO);
 	    		return $array_retorno;
 	    		exit();
-	    	endif;
+    		endif;
+
+    		if($this->verificaDuplicidade == TRUE && $this->verificaDuplicidadeUpdate($arrayDados, $arrayCondicao) == TRUE):
+    		   $array_retorno = array('codigo' => 0, 'mensagem' => MSG_DUPLICACAO_UPDATE);
+    		   return $array_retorno;
+			   exit();
+    		endif;
+
+    		$retorno = $this->crud->update($arrayDados, $arrayCondicao);
+    		if($retorno == 1):
+    			$array_retorno = array('codigo' => 1, 'mensagem' => MSG_SUCESSO_UPDATE);
+    			return $array_retorno;
+    		else:
+    			$array_retorno = array('codigo' => 2, 'mensagem' => MSG_ERRO_INTERNO);
+    			return $array_retorno;
+    		endif;
+
     	}catch(Exception $e){
 	    	$erro = 'Erro: ' . $e->getMessage();
 	    	$array_retorno = array('codigo' => 4, 'mensagem' => $erro);
@@ -267,6 +295,8 @@ class controller{
     */
     public function delete($arrayCondicao){
     	try{
+    		$this->verificaConfig();
+
 	    	if ($this->validaArray($arrayCondicao)):
 	    		$retorno = $this->crud->delete($arrayCondicao);
 	    		if($retorno == 1):
@@ -307,4 +337,19 @@ class controller{
 	    	return $array_retorno;
 	    }
    } 
+
+   /*
+   * Método privado para verificar se as configurações básicas do objeto estão setadas
+   */
+   private function verificaConfig(){
+   		if (empty($this->tabela)):
+   			echo "É necessário configurar o nome da tabela no objeto controller!";
+   			exit();
+   		endif;
+
+   		if (empty($this->fieldPk)):
+   			echo "É necessário configurar a chave primária da tabela no objeto controller!";
+   			exit();
+   		endif;
+   }
 }

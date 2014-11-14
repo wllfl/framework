@@ -169,10 +169,10 @@ class crud{
     
         // Loop para passar os dados como parâmetro   
         $cont = 1;   
-              foreach ($arrayDados as $valor):   
-                    $stm->bindValue($cont, $valor);   
-                    $cont++;   
-              endforeach;   
+        foreach ($arrayDados as $valor):   
+              $stm->bindValue($cont, $valor);   
+              $cont++;   
+        endforeach;   
     
         // Executa a instrução SQL e captura o retorno   
         $retorno = $stm->execute();   
