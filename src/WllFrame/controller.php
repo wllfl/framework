@@ -1,4 +1,6 @@
 <?php
+namespace WllFrame;
+
 /*
 * Classe Controller para receber os dados da View (HTML) e transferir para classe Crud
 * também recebe os dados da classe Crud e transferi para View (HTML)
@@ -7,10 +9,13 @@
 * 2 - $arrayCondicaoDuplicidade informas quais os campos, condições e valores para verificação de duplicidade de registros antes do INSERT
 */
 
+
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
-require_once "crud.class.php";
-require_once "helper/helper_format.class.php";
+require_once "crud.php";
+require_once "helper/helperFormat.php";
+
+use WllFrame\helper\helperFormat;
 
 define("MSG_DUPLICACAO_INSERT", "Inclusão cancelada, está duplicando registros!");
 define("MSG_DUPLICACAO_UPDATE", "Edição cancelada, está duplicando registros!");
@@ -64,6 +69,14 @@ class controller{
 	}
 
 	/*
+	* Método público para retornar o nome da tabela
+	* @return String contendo o nome da tabela
+	*/
+	public function getTableName(){
+		return $this->tabela;
+	}
+
+	/*
 	* Método público para setar o nome da campo que é chave primária da tabela
 	* @param $field_pk- String contendo o nome da chave primária tabela
 	*/
@@ -74,13 +87,29 @@ class controller{
 	}
 
 	/*
+	* Método público para retornar o nome da campo que é chave primária da tabela
+	* @return String contendo o nome da chave primária tabela
+	*/
+	public function getFieldPK(){
+		return $this->fieldPk;
+	}
+
+	/*
 	* Método público para setar o atributo de verificação para valores nulos
 	* @param $verificaNull - Valor booleano (TRUE verifica, FALSE não verifica)
 	*/
 	public function setVerificaNull($verificaNull){
 		if($verificaNull == TRUE || $verificaNull == FALSE):
-			$this->verificaNull = FALSE;
+			$this->verificaNull = $verificaNull;
 		endif;
+	}
+
+	/*
+	* Método público para retornar o atributo de verificação para valores nulos
+	* @return Valor booleano (TRUE verifica, FALSE não verifica)
+	*/
+	public function getVerificaNull(){
+		return $this->verificaNull;
 	}
 
 	/*
@@ -94,11 +123,27 @@ class controller{
 	}
 
 	/*
+	* Método público para retornar o atributo de verificação para registros duplicados
+	* @return Valor booleano (TRUE verifica, FALSE não verifica)
+	*/
+	public function getVerificaDuplicidade(){
+		return $this->verificaDuplicidade;
+	}
+
+	/*
 	* Método para setar a array com campos nulos aceitos
 	* @param $arrayNullAceito - Array com campos nulos que poderão ser aceitos no cadastro
 	*/
 	public function setNullAceito(array $arrayNullAceito){
 		$this->arrayNullAceito = $arrayNullAceito;
+	}
+
+	/*
+	* Método para retornar a array com campos nulos aceitos
+	* @return Array com campos nulos que poderão ser aceitos no cadastro
+	*/
+	public function getNullAceito(){
+		return $this->arrayNullAceito;
 	}
 
 	/*
@@ -110,12 +155,20 @@ class controller{
 	}
 
 	/*
+	* Método para retornar a array com condições para verificação de duplicidade
+	* @return Array com campos e condições para cláusula WHERE 
+	*/
+	public function getCondicaoDuplicidade(){
+		return $this->arrayCondicaoDuplicidade;
+	}
+
+	/*
 	* Método para validar dados de uma array
 	* @param $arrayDados - Array contendo dados a serem validados
 	* @param $arrayNullAceito - Array contendo os campos que podem conter valores null
 	* @return Boolean - Valor booleano TRUE array válida e FALSE array inválida
 	*/
-	private function validaArray($arrayDados){
+	public function isArrayValida($arrayDados){
 		$retorno = TRUE;
 
 		// Verifica se existem campos aceitos com valor null
@@ -140,7 +193,7 @@ class controller{
 	* Método para verificar duplicidade de registros no momento INSERT
 	* retorna um valor booleano, se duplicado TRUE senão retorna FALSE
 	*/
-	private function verificaDuplicidadeInsert(){
+	public function isRegistroDuplicadoInsert(){
 		$valCondicao = "";
 
 	   // Atribuindo qual será o campos de retorno, para não usar SELECT *
@@ -158,7 +211,7 @@ class controller{
 	       $cont++;  
 	   endforeach;
 
-	   $sql = "SELECT {$campo} FROM {$this->tabela} WHERE " . $valCondicao; 
+	   $sql = "SELECT {$this->fieldPk} FROM {$this->tabela} WHERE " . $valCondicao; 
 	   $retorno = $this->crud->getSQLGeneric($sql, $this->arrayCondicaoDuplicidade, TRUE);
 	   
 	   // Verifica se a consulta retornou vazia, se verdadeira retorna TRUE
@@ -175,7 +228,7 @@ class controller{
     * @param $valorCondicao = Array de dados contendo colunas e valor para condição WHERE - Exemplo array('$id='=>1) 
 	* retorna um valor booleano, se duplicado TRUE senão retorna FALSE
 	*/
-	private function verificaDuplicidadeUpdate($arrayDados, $valorCondicao){
+	public function isRegistroDuplicadoUpdate($arrayDados, $valorCondicao){
 	   $valCondicao = "";
 	   $parametros = array();
 	   $valorPK = (String) $valorCondicao[key($valorCondicao)];
@@ -223,13 +276,13 @@ class controller{
     	try{
     		$this->verificaConfig();
 
-    		if($this->verificaNull == TRUE && $this->validaArray($arrayDados) == FALSE):
+    		if($this->verificaNull == TRUE && $this->isArrayValida($arrayDados) == FALSE):
     			$array_retorno = array('codigo' => 3, 'mensagem' => MSG_CAMPO_OBRIGATORIO);
 	    		return $array_retorno;
 	    		exit();
     		endif;
 
-    		if($this->verificaDuplicidade == TRUE && $this->verificaDuplicidadeInsert() == TRUE):
+    		if($this->verificaDuplicidade == TRUE && $this->isRegistroDuplicadoInsert() == TRUE):
     		   $array_retorno = array('codigo' => 0, 'mensagem' => MSG_DUPLICACAO_INSERT);
     		   return $array_retorno;
 			   exit();
@@ -260,13 +313,13 @@ class controller{
     	try{
     		$this->verificaConfig();
 
-    		if($this->verificaNull == TRUE && $this->validaArray($arrayDados) == FALSE):
+    		if($this->verificaNull == TRUE && $this->isArrayValida($arrayDados) == FALSE):
     			$array_retorno = array('codigo' => 3, 'mensagem' => MSG_CAMPO_OBRIGATORIO);
 	    		return $array_retorno;
 	    		exit();
     		endif;
 
-    		if($this->verificaDuplicidade == TRUE && $this->verificaDuplicidadeUpdate($arrayDados, $arrayCondicao) == TRUE):
+    		if($this->verificaDuplicidade == TRUE && $this->isRegistroDuplicadoUpdate($arrayDados, $arrayCondicao) == TRUE):
     		   $array_retorno = array('codigo' => 0, 'mensagem' => MSG_DUPLICACAO_UPDATE);
     		   return $array_retorno;
 			   exit();
@@ -297,7 +350,7 @@ class controller{
     	try{
     		$this->verificaConfig();
 
-	    	if ($this->validaArray($arrayCondicao)):
+	    	if ($this->isArrayValida($arrayCondicao)):
 	    		$retorno = $this->crud->delete($arrayCondicao);
 	    		if($retorno == 1):
 	    			$array_retorno = array('codigo' => 1, 'mensagem' => MSG_SUCESSO_DELETE);

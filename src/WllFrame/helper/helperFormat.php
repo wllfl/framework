@@ -1,11 +1,12 @@
 <?php
+namespace WllFrame\helper;
 
 /*
 * Classe Helper com métodos estáticos para auxliar na formatação de valores
 * não é necessário instânciar a classe, uma vez que todos os métodos são estáticos
 */
 
-class helper_format{
+class helperFormat{
 
 	/*
 	* Método estático para formatar data no formato Americano
@@ -13,10 +14,12 @@ class helper_format{
 	* @return String - Data no formato americano yyyy-mm-dd
 	*/
 	public static function dataBrToEng($data){
-		if (!empty($data)){
+		if (!empty($data)):
            $data = explode("/", $data);
            return $data[2].'-'.$data[1].'-'.$data[0];
-       }
+        else:
+        	throw new \InvalidArgumentException("Argumento inválido!"); 	
+        endif;
 	}
 
 	/*
@@ -25,10 +28,12 @@ class helper_format{
 	* @return String - Data no formato brasileiro dd/mm/yyyy
 	*/
 	public static function dataEngToBr($data){
-		if (!empty($data)){
+		if (!empty($data)):
            $data = explode("-", $data);
            return $data[2].'/'.$data[1].'/'.$data[0];
-       }
+        else:
+        	throw new \InvalidArgumentException("Argumento inválido!"); 	
+        endif;
 	}
 
 	/*

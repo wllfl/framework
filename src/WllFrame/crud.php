@@ -1,5 +1,6 @@
-
 <?php  
+
+namespace WllFrame;
   
  /*************************************************************************************************************  
  * @author William F. Leite                                                                                   *  
@@ -10,12 +11,13 @@
  * via parâmetro.                                                                                             *  
  *************************************************************************************************************/  
 
+
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
-require_once "conexao.class.php";
-  
-header('Content-Type: text/html; charset=utf-8');  
-  
+require_once "conexao.php";
+
+use WllFrame\conexao;
+
 class crud{   
   
    // Atributo para guardar uma conexão PDO   
@@ -44,14 +46,22 @@ class crud{
      if(!empty($tabela)){  
        $this->tabela = $tabela;  
      }  
-   }  
+   } 
+
+    /*  
+   * Método para retornar o nome da tabela
+   * @return tring contendo o nome da tabela  
+   */   
+   public function getTableName(){  
+      return $this->tabela;
+   } 
     
    /*   
    * Método privado para construção da instrução SQL de INSERT   
    * @param $arrayDados = Array de dados contendo colunas e valores   
    * @return String contendo instrução SQL   
    */    
-   private function buildInsert($arrayDados){   
+   public function buildInsert($arrayDados){   
     
        // Inicializa variáveis   
        $sql = "";   
@@ -73,7 +83,7 @@ class crud{
        endforeach;   
 
        // Concatena todas as variáveis e finaliza a instrução   
-       $sql .= "INSERT INTO {$this->tabela} (" . $campos . ")VALUES(" . $valores . ")";   
+       $sql .= "INSERT INTO {$this->tabela} (" . trim($campos) . ")VALUES(" . $valores . ")";   
         
        // Retorna string com instrução SQL   
        return trim($sql);   
@@ -85,7 +95,7 @@ class crud{
    * @param $arrayCondicao = Array de dados contendo colunas e valores para condição WHERE   
    * @return String contendo instrução SQL   
    */    
-   private function buildUpdate($arrayDados, $arrayCondicao){   
+   public function buildUpdate($arrayDados, $arrayCondicao=null){   
     
        // Inicializa variáveis   
        $sql = "";   
@@ -105,19 +115,25 @@ class crud{
        endforeach;   
         
        // Loop para montar a condição WHERE
-       $cont = 1;   
-       foreach($arrayCondicao as $chave => $valor): 
-           if($cont < count($arrayCondicao)):
-               $valCondicao .= $chave . '? AND ';   
-           else:
-               $valCondicao .= $chave . '?';   
-           endif;
-  
-          $cont++;
-       endforeach;   
+       if(!empty($arrayCondicao)):
+         $cont = 1;   
+         foreach($arrayCondicao as $chave => $valor): 
+             if($cont < count($arrayCondicao)):
+                 $valCondicao .= $chave . '? AND ';   
+             else:
+                 $valCondicao .= $chave . '?';   
+             endif;
+    
+            $cont++;
+         endforeach;  
+       endif; 
    
-       // Concatena todas as variáveis e finaliza a instrução   
-       $sql .= "UPDATE {$this->tabela} SET " . $valCampos . " WHERE " . $valCondicao;   
+       // Concatena todas as variáveis e finaliza a instrução 
+       if (!empty($valCondicao)):  
+          $sql .= "UPDATE {$this->tabela} SET " . $valCampos . " WHERE " . $valCondicao;  
+       else:
+          $sql .= "UPDATE {$this->tabela} SET " . $valCampos;
+       endif; 
         
        // Retorna string com instrução SQL   
        return trim($sql);   
@@ -128,29 +144,33 @@ class crud{
    * @param $arrayCondicao = Array de dados contendo colunas, operadores e valores para condição WHERE   
    * @return String contendo instrução SQL   
    */    
-   private function buildDelete($arrayCondicao){   
+   public function buildDelete($arrayCondicao){   
     
-       // Inicializa variáveis   
-       $sql = "";   
-       $valCampos= "";   
-        
-       // Loop para montar a instrução com os campos e valores 
-       $cont = 1;  
-       foreach($arrayCondicao as $chave => $valor):
-           if($cont < count($arrayCondicao)):   
-              $valCampos .= $chave . '? AND '; 
-           else:
-              $valCampos .= $chave . '?'; 
-           endif;
+       if(!empty($arrayCondicao)):
+           // Inicializa variáveis   
+           $sql = "";   
+           $valCampos= "";   
+            
+           // Loop para montar a instrução com os campos e valores 
+           $cont = 1;  
+           foreach($arrayCondicao as $chave => $valor):
+               if($cont < count($arrayCondicao)):   
+                  $valCampos .= $chave . '? AND '; 
+               else:
+                  $valCampos .= $chave . '?'; 
+               endif;
 
-         $cont++;  
-       endforeach;   
+             $cont++;  
+           endforeach;   
 
-       // Concatena todas as variáveis e finaliza a instrução   
-       $sql .= "DELETE FROM {$this->tabela} WHERE " . $valCampos;   
-        
-       // Retorna string com instrução SQL   
-       return trim($sql);   
+           // Concatena todas as variáveis e finaliza a instrução   
+           $sql .= "DELETE FROM {$this->tabela} WHERE " . $valCampos;   
+            
+           // Retorna string com instrução SQL   
+           return trim($sql);   
+        else:
+          throw new \InvalidArgumentException("Argumento Inválido!");    
+        endif;
    }   
     
    /*   
@@ -180,7 +200,8 @@ class crud{
         return $retorno;   
            
       } catch (PDOException $e) {   
-        echo "Erro: " . $e->getMessage();   
+        echo "Erro: " . $e->getMessage(); 
+        return false;   
       }   
    }   
     
@@ -190,7 +211,7 @@ class crud{
    * @param $arrayCondicao = Array de dados contendo colunas e valores para condição WHERE - Exemplo array('$id='=>1)   
    * @return Retorna resultado booleano da instrução SQL   
    */   
-   public function update($arrayDados, $arrayCondicao){   
+   public function update($arrayDados, $arrayCondicao=null){   
       try {   
     
         // Atribui a instrução SQL construida no método   
@@ -207,10 +228,12 @@ class crud{
         endforeach;   
         
         // Loop para passar os dados como parâmetro cláusula WHERE   
-        foreach ($arrayCondicao as $valor):   
-          $stm->bindValue($cont, $valor);   
-          $cont++;   
-        endforeach;   
+        if (!empty($arrayCondicao)):
+            foreach ($arrayCondicao as $valor):   
+              $stm->bindValue($cont, $valor);   
+              $cont++;   
+            endforeach;  
+        endif; 
     
         // Executa a instrução SQL e captura o retorno   
         $retorno = $stm->execute();   
@@ -219,6 +242,7 @@ class crud{
            
       } catch (PDOException $e) {   
         echo "Erro: " . $e->getMessage();   
+        return false; 
       }   
    }   
     
@@ -249,7 +273,8 @@ class crud{
         return $retorno;   
            
       } catch (PDOException $e) {   
-        echo "Erro: " . $e->getMessage();   
+        echo "Erro: " . $e->getMessage();  
+        return false; 
       }   
    }   
 
@@ -262,7 +287,6 @@ class crud{
    */  
    public function getSQLGeneric($sql, $arrayParams=null, $fetchAll=TRUE){  
       try {   
-    
           // Passa a instrução para o PDO   
           $stm = $this->pdo->prepare($sql);   
       
@@ -283,9 +307,9 @@ class crud{
       
           // Verifica se é necessário retornar várias linhas  
           if($fetchAll):   
-            $dados = $stm->fetchAll(PDO::FETCH_OBJ);   
+            $dados = $stm->fetchAll(\PDO::FETCH_OBJ);   
           else:  
-            $dados = $stm->fetch(PDO::FETCH_OBJ);   
+            $dados = $stm->fetch(\PDO::FETCH_OBJ);   
           endif;  
       
           return $dados;   

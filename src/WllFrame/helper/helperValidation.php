@@ -1,18 +1,19 @@
 <?php
+namespace WllFrame\helper;
 
 /*
 * Classe Helper com métodos estáticos para auxliar na validações de valores
 * não é necessário instânciar a classe, uma vez que todos os métodos são estáticos
 */
 
-class helper_validation{
+class helperValidation{
 
 	/*
 	* Método estático para validar documento CPF
 	* @param $valor - String contendo o número do CPF
 	* @return Booleano - Retorna TRUE para válido e FALSE para inválido
 	*/
-	public static function validarCPF($valor){
+	public static function isCPFValido($valor){
 
 		// Retira os pontos se existirem
 		$valor = str_replace(array('.','-','/'), "", $valor);
@@ -47,7 +48,7 @@ class helper_validation{
 	* @param $valor - String contendo o número do CNPJ
 	* @return Booleano - Retorna TRUE para válido e FALSE para inválido
 	*/
-	public static function validarCNPJ($valor){
+	public static function isCNPJValido($valor){
 		$cnpj = str_pad(str_replace(array('.','-','/'),'',$valor),14,'0',STR_PAD_LEFT);
 
 		if (strlen($cnpj) != 14):
@@ -75,7 +76,7 @@ class helper_validation{
 	* @param $email - String contendo o número do Email
 	* @return Booleano - Retorna TRUE para válido e FALSE para inválido
 	*/
-	public static function validarEmail($email){
+	public static function isEmailValido($email){
 		$conta = "/[a-zA-Z0-9\._-]+@";
 		$domino = "[a-zA-Z0-9\._-]+.";
 		$extensao = "([a-zA-Z]{2,4})$/";
@@ -89,3 +90,4 @@ class helper_validation{
 	}
 
 }
+
