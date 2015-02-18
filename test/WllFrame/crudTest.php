@@ -15,6 +15,13 @@ class crudTest extends PHPUnit_Framework_TestCase{
         $conexao->exec($sql);
     }
 
+    public function tearDown()
+    {
+    	$conexao = conexao::getInstance();
+        $sql = "TRUNCATE TABLE tab_cidade";
+        $conexao->exec($sql);
+    }
+
 	public function testRetornaNomeDaTabela(){
 		$crud = new crud('tab_cidade');
 		$this->assertEquals('tab_cidade', $crud->getTableName());

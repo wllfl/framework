@@ -65,6 +65,12 @@ class controller{
 	public function setTableName($tableName){
 		if(!empty($tableName)):
 			$this->tabela = $tableName;
+
+			if(empty($this->crud)):
+				$this->crud = new Crud($tableName);
+			else:
+				$this->crud->setTableName($tableName);
+			endif;
 		endif;
 	}
 

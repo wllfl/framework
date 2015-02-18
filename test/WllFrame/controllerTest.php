@@ -18,6 +18,9 @@ class controllerTest extends PHPUnit_Framework_TestCase{
 
     public function tearDown()
     {
+    	$conexao = conexao::getInstance();
+        $sql = "TRUNCATE TABLE tab_cidade";
+        $conexao->exec($sql);
         unset($controller);
     }
 
@@ -27,6 +30,29 @@ class controllerTest extends PHPUnit_Framework_TestCase{
 
 		$controller->setTableName('tab_cidade2');
 		$this->assertEquals('tab_cidade2', $controller->getTableName());
+	}
+
+	public function testRetornoDeSelectAposMudancaDoNomeDaTabela(){
+		$controller = new controller('tab_cidade', 'id');
+		$controller->setVerificaNull(FALSE);
+		$controller->setVerificaDuplicidade(FALSE);
+		$arrayDados = [
+			'descricao'=> 'Indaiatuba',
+			'id_uf'=> 70400
+		];
+		$arrayRetorno = $controller->insert($arrayDados);
+
+		$arrayExpected = ['codigo' => 1, 'mensagem' => 'Registro incluído com sucesso!'];
+		$this->assertEquals($arrayExpected, $arrayRetorno);
+
+		$controller->setTableName('tab_uf');
+		$arrayDados2 = [
+			'descricao'=> 'Bahia',
+		];
+		$arrayRetorno2 = $controller->insert($arrayDados2);
+
+		$arrayExpected2 = ['codigo' => 1, 'mensagem' => 'Registro incluído com sucesso!'];
+		$this->assertEquals($arrayExpected, $arrayRetorno2);
 	}
 
 	public function testRetornaNomeDaPrimaryKey(){
