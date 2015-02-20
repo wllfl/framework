@@ -204,7 +204,7 @@ class crudTest extends PHPUnit_Framework_TestCase{
 
 		$sql = "SELECT descricao FROM tab_cidade WHERE id_uf = ?";
 		$arrayParams = [56];
-		$arrayRetorno = $crud->getSQLGeneric($sql, $arrayParams, false);
+		$arrayRetorno = $crud->getSelectGeneric($sql, $arrayParams, false);
 
 		$descricao = $arrayRetorno->descricao;
 		$this->assertEquals('Jundiai', $descricao);
@@ -229,9 +229,46 @@ class crudTest extends PHPUnit_Framework_TestCase{
 		$crud->insert($arrayDados2);
 
 		$sql = "SELECT descricao FROM tab_cidade";
-		$arrayRetorno = $crud->getSQLGeneric($sql, null, true);
+		$arrayRetorno = $crud->getSelectGeneric($sql, null, true);
 
 		$count = count($arrayRetorno);
 		$this->assertEquals(2, $count);
+	}
+
+	public function testInseriUmRegistroMetodoExec(){
+		$crud = new crud('tab_cidade');
+
+		$sql = "INSERT INTO tab_cidade (descricao, id_uf)VALUES('Aluminio', 8596)";
+		$retorno = $crud->execInstrucaoSQL($sql);
+
+		$this->assertEquals(1, $retorno);
+	}
+
+	public function testAtualizaUmRegistroMetodoExec(){
+		$crud = new crud('tab_cidade');
+
+		$sql = "INSERT INTO tab_cidade (descricao, id_uf)VALUES('Aluminio', 8596)";
+		$retorno = $crud->execInstrucaoSQL($sql);
+
+		$this->assertEquals(1, $retorno);
+
+		$sql2 = "UPDATE tab_cidade SET descricao = 'Ibiuna' WHERE id_uf = 8596";
+		$retorno2 = $crud->execInstrucaoSQL($sql2);
+
+		$this->assertEquals(1, $retorno2);
+	}
+
+	public function testExcluirUmRegistroMetodoExec(){
+		$crud = new crud('tab_cidade');
+
+		$sql = "INSERT INTO tab_cidade (descricao, id_uf)VALUES('Aluminio', 8596)";
+		$retorno = $crud->execInstrucaoSQL($sql);
+
+		$this->assertEquals(1, $retorno);
+
+		$sql2 = "DELETE FROM tab_cidade WHERE id_uf = 8596";
+		$retorno2 = $crud->execInstrucaoSQL($sql2);
+
+		$this->assertEquals(1, $retorno2);
 	}
 }

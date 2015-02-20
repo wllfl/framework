@@ -146,7 +146,7 @@ class controllerTest extends PHPUnit_Framework_TestCase{
 		$crud->insert($arrayDados);
 
 		$sql = "SELECT id FROM tab_cidade ORDER BY id DESC LIMIT 1";
-		$arrayRetorno = $crud->getSQLGeneric($sql, null, false);
+		$arrayRetorno = $crud->getSelectGeneric($sql, null, false);
 		$id = $arrayRetorno->id;
 
 		$controller = new controller('tab_cidade', 'id');
@@ -385,7 +385,7 @@ class controllerTest extends PHPUnit_Framework_TestCase{
 
 		$crud = new crud('tab_cidade');
 		$sql = "SELECT id FROM tab_cidade ORDER BY id DESC LIMIT 1";
-		$arrayRetorno = $crud->getSQLGeneric($sql, null, false);
+		$arrayRetorno = $crud->getSelectGeneric($sql, null, false);
 		$id = $arrayRetorno->id;
 
 		$arrayCondicao = ['id='=>$id];
@@ -432,5 +432,48 @@ class controllerTest extends PHPUnit_Framework_TestCase{
 
 		$count = count($arrayRetorno);
 		$this->assertEquals(2, $count);
+	}
+
+	public function testInseriUmRegistroMetodoExec(){
+		$controller = new controller('tab_cidade', 'id');
+		$controller->setVerificaNull(FALSE);
+		$controller->setVerificaDuplicidade(FALSE);
+
+		$sql = "INSERT INTO tab_cidade (descricao, id_uf)VALUES('Aluminio', 8596)";
+		$retorno = $controller->execSQL($sql);
+
+		$this->assertEquals(1, $retorno);
+	}
+
+	public function testAtualizaUmRegistroMetodoExec(){
+		$controller = new controller('tab_cidade', 'id');
+		$controller->setVerificaNull(FALSE);
+		$controller->setVerificaDuplicidade(FALSE);
+
+		$sql = "INSERT INTO tab_cidade (descricao, id_uf)VALUES('Aluminio', 8596)";
+		$retorno = $controller->execSQL($sql);
+
+		$this->assertEquals(1, $retorno);
+
+		$sql2 = "UPDATE tab_cidade SET descricao = 'Ibiuna' WHERE id_uf = 8596";
+		$retorno2 = $controller->execSQL($sql2);
+
+		$this->assertEquals(1, $retorno2);
+	}
+
+	public function testExcluirUmRegistroMetodoExec(){
+		$controller = new controller('tab_cidade', 'id');
+		$controller->setVerificaNull(FALSE);
+		$controller->setVerificaDuplicidade(FALSE);
+
+		$sql = "INSERT INTO tab_cidade (descricao, id_uf)VALUES('Aluminio', 8596)";
+		$retorno = $controller->execSQL($sql);
+
+		$this->assertEquals(1, $retorno);
+
+		$sql2 = "DELETE FROM tab_cidade WHERE id_uf = 8596";
+		$retorno2 = $controller->execSQL($sql2);
+
+		$this->assertEquals(1, $retorno2);
 	}
 }

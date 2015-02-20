@@ -218,7 +218,7 @@ class controller{
 	   endforeach;
 
 	   $sql = "SELECT {$this->fieldPk} FROM {$this->tabela} WHERE " . $valCondicao; 
-	   $retorno = $this->crud->getSQLGeneric($sql, $this->arrayCondicaoDuplicidade, TRUE);
+	   $retorno = $this->crud->getSelectGeneric($sql, $this->arrayCondicaoDuplicidade, TRUE);
 	   
 	   // Verifica se a consulta retornou vazia, se verdadeira retorna TRUE
 	   if (empty($retorno)):
@@ -257,7 +257,7 @@ class controller{
 	   endforeach;
 
 	   $sql = "SELECT {$this->fieldPk} FROM {$this->tabela} WHERE " . $valCondicao; 
-	   $dados = $this->crud->getSQLGeneric($sql, $parametros, TRUE);
+	   $dados = $this->crud->getSelectGeneric($sql, $parametros, TRUE);
 
 	   // Verifica se a consulta retornou dados e compara com o valor passado como condição para o update
 	   if(empty($dados)):
@@ -387,7 +387,7 @@ class controller{
    public function getDados($sql, $arrayParams=null, $fetchAll=TRUE){
    		try{
    			if(!empty($sql)):
-   				$retorno = $this->crud->getSQLGeneric($sql, $arrayParams, $fetchAll);
+   				$retorno = $this->crud->getSelectGeneric($sql, $arrayParams, $fetchAll);
    				return $retorno;
    			endif;
    		}catch(Exception $e){
@@ -396,6 +396,24 @@ class controller{
 	    	return $array_retorno;
 	    }
    } 
+
+   /*  
+   * Método genérico para executar instruções SQL para INSERT, UPDATE E DELETE quando não houver necessidade de se montar bind dos parâmetros
+   * @param $sql = Instrução SQL inteira contendo, com nome da tabela, campos e valores
+   * @return Retorna valor booleano da método execute()
+   */ 
+   public function execSQL($sql){
+   		try{
+   			if(!empty($sql)):
+   				$retorno = $this->crud->execInstrucaoSQL($sql);
+   				return $retorno;
+   			endif;
+   		}catch(Exception $e){
+	    	$erro = 'Erro: ' . $e->getMessage();
+	    	$array_retorno = array('codigo' => 4, 'mensagem' => $erro);
+	    	return $array_retorno;
+	    }
+   }
 
    /*
    * Método privado para verificar se as configurações básicas do objeto estão setadas

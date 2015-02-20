@@ -285,7 +285,7 @@ class crud{
    * @param $fetchAll  = Valor booleano com valor default TRUE indicando que serão retornadas várias linhas, FALSE retorna apenas a primeira linha  
    * @return Retorna array de dados da consulta em forma de objetos  
    */  
-   public function getSQLGeneric($sql, $arrayParams=null, $fetchAll=TRUE){  
+   public function getSelectGeneric($sql, $arrayParams=null, $fetchAll=TRUE){  
       try {   
           // Passa a instrução para o PDO   
           $stm = $this->pdo->prepare($sql);   
@@ -317,5 +317,22 @@ class crud{
       } catch (PDOException $e) {   
           echo "Erro: " . $e->getMessage();   
       }   
-   }   
+   } 
+
+   /*  
+   * Método genérico para executar instruções SQL para INSERT, UPDATE E DELETE quando não houver necessidade de se montar bind dos parâmetros
+   * @param $sql = Instrução SQL inteira contendo, com nome da tabela, campos e valores
+   * @return Retorna valor booleano da método execute()
+   */ 
+   public function execInstrucaoSQL($sql){
+      try {   
+          
+          $stm = $this->pdo->prepare($sql);
+          $retorno = $stm->execute();
+           
+          return $retorno;
+      } catch (PDOException $e) {   
+          echo "Erro: " . $e->getMessage();   
+      }   
+   }  
 }  
